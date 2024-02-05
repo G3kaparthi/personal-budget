@@ -72,21 +72,15 @@
     </section>
 
     <!-- Section for budget chart -->
-    <section aria-labelledby="chart-heading">
+    <section aria-labelledby="chart-heading" style="height: 400px; width: 400px;">
         <h2 id="chart-heading">Chart</h2>
         <p>
-            <canvas id="myChart" width="400" height="400" alt="Budget Chart"></canvas>
+            <canvas id="myChartPie" width="250" height="250" alt="Budget Chart"></canvas>
+            <canvas id="myChartDoughnut" width="250" height="250" alt="Budget Chart"></canvas>
         </p>
     </section>
 
 </main>
-
-<!-- Footer for copyright information -->
-<footer>
-    <div>
-        All rights reserved &copy; Fabio Nolasco
-    </div>
-</footer>
 
 <!-- External scripts for additional functionality -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.20.0/axios.min.js" integrity="sha512-quHCp3WbBNkwLfYUMd+KwBAgpVukJu5MncuQaWXgCrfgcxCJAq/fo+oqrRKOj+UKEmyMCG3tb8RB63W+EmrOBg==" crossorigin="anonymous"></script>
@@ -103,32 +97,50 @@
                         '#ff6384',
                         '#36a2eb',
                         '#fd6b19',
+                        '#008080',
+                        '#A52A2A',
+                        '#FFC0CB',
+                        '#800080'
                     ]
                 }
             ],
             labels: []
         };
 
-    function createChart() {
-        var ctx = document.getElementById('myChart').getContext('2d');
+    function createChartP() {
+        var ctx = document.getElementById('myChartPie').getContext('2d');
         var myPieChart = new Chart(ctx, {
             type: 'pie',
             data: dataSource
         });
     }
 
-    function getBudget() {
-        axios.get('http://localhost:3000/budget')
+    function createChartD() {
+        var ctx = document.getElementById('myChartDoughnut').getContext('2d');
+        var myDoughnutChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: dataSource
+        });
+    }
+
+    function getBudget(type) {
+        axios.get('/budget')
         .then(function (res) {
             for (var i = 0; i < res.data.myBudget.length; i++) {
                 dataSource.datasets[0].data[i] = res.data.myBudget[i].budget;
                 dataSource.labels[i] = res.data.myBudget[i].title;
-                createChart();
+           
+            }
+            if (type === 'pie') {
+                createChartP();
+            } else if (type === 'doughnut') {
+                createChartD();
             }
         });
     }
 
-    getBudget();
+    getBudget('pie'); 
+    getBudget('doughnut'); 
 </script>
 
 </body>
