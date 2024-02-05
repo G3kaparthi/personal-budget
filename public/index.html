@@ -75,8 +75,7 @@
     <section aria-labelledby="chart-heading" style="height: 400px; width: 400px;">
         <h2 id="chart-heading">Chart</h2>
         <p>
-            <canvas id="myChartPie" width="250" height="250" alt="Budget Chart"></canvas>
-            <canvas id="myChartDoughnut" width="250" height="250" alt="Budget Chart"></canvas>
+            <canvas id="myChart" width="250" height="250" alt="Budget Chart"></canvas>
         </p>
     </section>
 
@@ -93,7 +92,7 @@
                 {
                     data: [],
                     backgroundColor: [
-                        '#ffcd56',
+                    '#ffcd56',
                         '#ff6384',
                         '#36a2eb',
                         '#fd6b19',
@@ -107,40 +106,27 @@
             labels: []
         };
 
-    function createChartP() {
-        var ctx = document.getElementById('myChartPie').getContext('2d');
+    function createChart() {
+        var ctx = document.getElementById('myChart').getContext('2d');
         var myPieChart = new Chart(ctx, {
             type: 'pie',
             data: dataSource
         });
     }
 
-    function createChartD() {
-        var ctx = document.getElementById('myChartDoughnut').getContext('2d');
-        var myDoughnutChart = new Chart(ctx, {
-            type: 'doughnut',
-            data: dataSource
-        });
-    }
-
-    function getBudget(type) {
-        axios.get('/budget')
+    function getBudget() {
+        axios.get('http://localhost:3000/budget')
         .then(function (res) {
+            console.log(res.data);
             for (var i = 0; i < res.data.myBudget.length; i++) {
                 dataSource.datasets[0].data[i] = res.data.myBudget[i].budget;
                 dataSource.labels[i] = res.data.myBudget[i].title;
-           
             }
-            if (type === 'pie') {
-                createChartP();
-            } else if (type === 'doughnut') {
-                createChartD();
-            }
+            createChart();
         });
     }
 
-    getBudget('pie'); 
-    getBudget('doughnut'); 
+    getBudget();
 </script>
 
 </body>
